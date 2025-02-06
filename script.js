@@ -1,25 +1,31 @@
-let draggedElement = null; // Stores the element being dragged
+let draggedElement = null;
 
-document.querySelectorAll(".image").forEach((div) => {
-    div.addEventListener("dragstart", (event) => {
-        draggedElement = event.target; // Store reference
-        event.dataTransfer.effectAllowed = "move"; // Indicate movement
-    });
+function drag(ev) {
+    // Store the dragged element reference
+    draggedElement = ev.target;
+    // Allow data transfer to happen
+    ev.dataTransfer.setData("text", ev.target.id);
+}
 
-    div.addEventListener("dragover", (event) => {
-        event.preventDefault(); // Allow drop event
-    });
+function allowDrop(ev) {
+    // Prevent default to allow drop
+    ev.preventDefault();
+}
 
-    div.addEventListener("drop", (event) => {
-        event.preventDefault();
+function drop(ev) {
+    // Prevent default action (open as link for some elements)
+    ev.preventDefault();
 
-        let targetElement = event.target; // The element being dropped onto
+    const targetElement = ev.target;
 
-        if (draggedElement && targetElement && draggedElement !== targetElement) {
-            // Swap background images
-            let tempBg = draggedElement.style.backgroundImage;
-            draggedElement.style.backgroundImage = targetElement.style.backgroundImage;
-            targetElement.style.backgroundImage = tempBg;
-        }
-    });
-});
+    // Make sure the drop is only on a valid div (not within a child div)
+    if (targetElement.classList.contains("image")) {
+        // Get the background image of both the dragged and target divs
+        const draggedImage = draggedElement.style.backgroundImage;
+        const targetImage = targetElement.style.backgroundImage;
+
+        // Swap the images between dragged and target divs
+        draggedElement.style.backgroundImage = targetImage;
+        targetElement.style.backgroundImage = draggedImage;
+    }
+}
