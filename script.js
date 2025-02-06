@@ -1,31 +1,25 @@
-let draggedElement = null; // Store the dragged element reference
+let draggedElement = null; // Stores the element being dragged
 
-function drag(event) {
-    draggedElement = event.target; // Store the dragged element reference
-    event.dataTransfer.setData("text/plain", event.target.id); // Store the ID of dragged element
-    event.dataTransfer.effectAllowed = "move";
-}
+document.querySelectorAll(".image").forEach((div) => {
+    div.addEventListener("dragstart", (event) => {
+        draggedElement = event.target; // Store reference
+        event.dataTransfer.effectAllowed = "move"; // Indicate movement
+    });
 
-function drop(event) {
-    event.preventDefault();
-    
-    let targetElement = event.target.closest(".image"); // Ensure we get the correct div
+    div.addEventListener("dragover", (event) => {
+        event.preventDefault(); // Allow drop event
+    });
 
-    if (draggedElement && targetElement && draggedElement !== targetElement) {
-        // Swap the background images
-        let temp = draggedElement.style.backgroundImage;
-        draggedElement.style.backgroundImage = targetElement.style.backgroundImage;
-        targetElement.style.backgroundImage = temp;
-    }
-}
+    div.addEventListener("drop", (event) => {
+        event.preventDefault();
 
-function allowDrop(event) {
-    event.preventDefault(); // Allow dropping
-}
+        let targetElement = event.target; // The element being dropped onto
 
-// Attach event listeners dynamically
-document.querySelectorAll(".image").forEach(div => {
-    div.addEventListener("dragstart", drag);
-    div.addEventListener("dragover", allowDrop);
-    div.addEventListener("drop", drop);
+        if (draggedElement && targetElement && draggedElement !== targetElement) {
+            // Swap background images
+            let tempBg = draggedElement.style.backgroundImage;
+            draggedElement.style.backgroundImage = targetElement.style.backgroundImage;
+            targetElement.style.backgroundImage = tempBg;
+        }
+    });
 });
